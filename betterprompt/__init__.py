@@ -40,3 +40,4 @@ def calculate_perplexity(prompt: str, model_name: str = "text-davinci-003"):
 
   perplexity = math.exp(sum(nlls)/len(token_logprobs))
   return perplexity
+

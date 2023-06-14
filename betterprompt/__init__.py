@@ -4,8 +4,6 @@ import math
 import os
 
 
-model_name: str = "text-davinci-003"
-
 def get_from_dict_or_env(env_key: str) -> str:
   """Get a value from a dictionary or an environment variable."""
   if env_key in os.environ and os.environ[env_key]:
@@ -18,12 +16,12 @@ def get_from_dict_or_env(env_key: str) -> str:
       )
     
 
-def call_openai(prompt: str):
+def call_openai(prompt: str, model_name: str = "text-davinci-003"):
   openai_api_key = get_from_dict_or_env("OPENAI_API_KEY")
   openai.api_key = openai_api_key
   #GET THE LOGPROB OF THE PROMPT
   response = openai.Completion.create(
-    model="text-davinci-003",
+    model=model_name,
     prompt=prompt,
     max_tokens=0,
     echo=True,
@@ -31,10 +29,10 @@ def call_openai(prompt: str):
   )
   return response["choices"][0]["logprobs"]["token_logprobs"]
 
-def calculate_perplexity(prompt: str):
+def calculate_perplexity(prompt: str, model_name: str = "text-davinci-003"):
   nlls = []
 
-  token_logprobs = call_openai(prompt)
+  token_logprobs = call_openai(prompt, model_name)
   for neg_log_likelihood in token_logprobs:
     if neg_log_likelihood == None: #default to -100, handles the initial token case
       neg_log_likelihood = -100
